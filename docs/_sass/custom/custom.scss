@@ -1,8 +1,9 @@
 .site-title {
-  font-size: 1.15rem !important;
+  font-size: 1.05rem !important;
   font-weight: 700;
   letter-spacing: -0.01em;
-  white-space: nowrap;
+  line-height: 1.25;
+  white-space: normal;
   gap: 10px;
 
   &::before {
