@@ -25,7 +25,9 @@ DEBUG=True
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
-All three have defaults, so the app starts without a `.env`, but set your own `SECRET_KEY` anywhere other than your own machine. `DATABASE_URL` accepts any URL that `dj-database-url` understands, so PostgreSQL works as well as SQLite.
+Always set your own `SECRET_KEY`. `DATABASE_URL` works with SQLite or PostgreSQL.
+
+For telemedicine, save your Google OAuth client file as `secrets/credentials.json` beside `manage.py`; see [Telemedicine]({% link telemedicine.md %}).
 
 ## Create the database and an administrator
 

@@ -5,58 +5,35 @@ nav_order: 3
 
 # Architecture
 
-The system is a single Django 5 project, `HMS`, split into four apps. Pages are rendered on the server with Django templates styled with Tailwind CSS, and the dashboards load their chart data from small JSON endpoints that Chart.js draws in the browser.
+The system is a single Django project split into four apps. Pages are rendered on the server and styled with Tailwind CSS, and the dashboards draw their charts in the browser with Chart.js.
 
-| App | What it owns |
+| App | What it covers |
 |---|---|
-| `users` | The custom user model (email sign-in, profile ID), profiles with next-of-kin details and speciality, sign-in, registration and the doctor dashboard |
-| `patients` | The patient dashboard, the staff patient list, and personal activity lists |
-| `appointments` | Vitals and triage at booking, doctors' consulting hours, appointments and the Google Meet integration |
-| `medicals` | Diagnoses, prescriptions, investigations and the medical record views |
+| `users` | Accounts, profiles, sign-in and the doctor dashboard |
+| `patients` | The patient dashboard, the staff patient list and personal activity lists |
+| `appointments` | Vitals and triage, doctors' consulting hours, appointments and Google Meet |
+| `medicals` | Diagnoses, prescriptions, investigations and medical records |
 
 ```mermaid
 flowchart LR
-    B["Browser<br/>(templates + Chart.js)"] --> U["users"]
+    B["Browser"] --> U["users"]
     B --> P["patients"]
     B --> A["appointments"]
     B --> M["medicals"]
-    A -- "Calendar API" --> G[("Google Calendar<br/>+ Meet")]
-    U & P & A & M --> D[("Database<br/>SQLite or PostgreSQL")]
+    A --> G[("Google Calendar<br/>+ Meet")]
+    U & P & A & M --> D[("Database")]
 ```
 
-## Data model
+## How the records fit together
 
-Everyone, patient or staff, is a `CustomUser`. A one-to-one `ProfileModel` holds the personal and clinical profile. Clinical records point at two users, the patient and the doctor, and prescriptions and investigations hang off the diagnosis they belong to.
+Everyone, patient or staff, has one account with a profile. A visit starts with vitals and a triage level. The doctor's diagnosis is the anchor for the rest: prescriptions and investigations are attached to it, so a patient's history reads as a series of diagnoses, each with what was prescribed and what was tested.
 
 ```mermaid
-erDiagram
-    CustomUser ||--|| ProfileModel : has
-    CustomUser ||--o{ Todo : keeps
-    CustomUser ||--o{ Appointment : "books (patient)"
-    CustomUser ||--o{ Appointment : "takes (doctor)"
-    Availability ||--o{ Appointment : "fills"
-    CustomUser ||--o{ Diagnosis : "receives / records"
-    Diagnosis ||--o{ Prescription : has
-    Diagnosis ||--o{ Investigation : has
+flowchart LR
+    V["Vitals and triage"] --> Dx["Diagnosis"]
+    Dx --> Rx["Prescriptions"]
+    Dx --> Lab["Investigations"]
+    S["Doctor's slot"] --> Ap["Appointment<br/>with Meet link"]
 ```
 
-| Model | Key fields |
-|---|---|
-| `CustomUser` | email (used to sign in), `profile_id` (five digits), name, contact, date of birth, sex |
-| `ProfileModel` | profile picture, region, religion, marital status, occupation, speciality (for doctors), triage level, next-of-kin details |
-| `BookPatient` | patient ID, temperature, blood pressure, triage, comments, time recorded |
-| `Availability` | doctor ID, day of the week, time, in person or virtual |
-| `Appointment` | doctor, patient, availability slot, comments, Google Meet link |
-| `Diagnosis` | patient, doctor, diagnosis, acute or chronic |
-| `Prescription` | diagnosis, medicine, strength, dose, frequency, duration, quantity, instructions |
-| `Investigation` | diagnosis, test, unit, referral facility, reason |
-| `Todo` | owner, task, deadline, completed |
-
-Clinical fields use fixed choices (for example ten common diagnoses, ten medicines, four strengths and the standard OD/BID/TID/QID doses), which keeps records consistent and makes them easy to count for the charts.
-
-## Charts
-
-Two JSON endpoints feed the dashboards:
-
-- `GET /chart/` returns diagnosis counts across the hospital and a count of men, women and children, for the doctor dashboard.
-- `GET /patients/chart/` returns diagnosis counts and the signed-in patient's temperature, systolic and diastolic pressure for the last six days, for the patient dashboard.
+Clinical entries use fixed lists (common diagnoses, medicines, strengths and doses) rather than free text, which keeps records consistent and easy to chart.
