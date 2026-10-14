@@ -1,0 +1,50 @@
+(document.documentElement.getAttribute("data-theme") === "dark" ? {
+  "theme": "base",
+  "fontFamily": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+  "themeVariables": {
+    "darkMode": true,
+    "background": "#090d12",
+    "primaryColor": "#0b2a33",
+    "primaryBorderColor": "#22d3ee",
+    "primaryTextColor": "#eef2f6",
+    "secondaryColor": "#0f1d2a",
+    "tertiaryColor": "#121a23",
+    "lineColor": "#64748b",
+    "textColor": "#c2cad5",
+    "edgeLabelBackground": "#121a23",
+    "actorBkg": "#0b2a33",
+    "actorBorder": "#22d3ee",
+    "actorTextColor": "#eef2f6",
+    "actorLineColor": "#2a3644",
+    "signalColor": "#c2cad5",
+    "signalTextColor": "#c2cad5",
+    "labelBoxBkgColor": "#121a23",
+    "labelBoxBorderColor": "#2a3644",
+    "labelTextColor": "#c2cad5",
+    "loopTextColor": "#c2cad5"
+  }
+} : {
+  "theme": "base",
+  "fontFamily": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+  "themeVariables": {
+    "background": "#ffffff",
+    "primaryColor": "#ecfeff",
+    "primaryBorderColor": "#06b6d4",
+    "primaryTextColor": "#0b1220",
+    "secondaryColor": "#f0f9ff",
+    "tertiaryColor": "#f8fafc",
+    "lineColor": "#94a3b8",
+    "textColor": "#3b4455",
+    "edgeLabelBackground": "#ffffff",
+    "actorBkg": "#ecfeff",
+    "actorBorder": "#06b6d4",
+    "actorTextColor": "#0b1220",
+    "actorLineColor": "#cbd5e1",
+    "signalColor": "#3b4455",
+    "signalTextColor": "#3b4455",
+    "labelBoxBkgColor": "#f8fafc",
+    "labelBoxBorderColor": "#cbd5e1",
+    "labelTextColor": "#3b4455",
+    "loopTextColor": "#3b4455"
+  }
+})
